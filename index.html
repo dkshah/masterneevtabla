@@ -4,14 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Master Neev Tabla - Official Video Showcase. Learn Tabla from Master Neev.">
+    <meta name="description"
+        content="Master Neev Tabla - Official Video Showcase. Learn Tabla rhythms, Taals (Keherwa, Dadra, Teentaal) and watch live performances.">
+    <meta name="keywords"
+        content="Tabla, Master Neev, Indian Classical Music, Tabla Lessons, Teentaal, Keherwa, Dadra, Percussion, Tabla Cover">
+    <meta name="author" content="Master Neev">
+
+    <!-- Social Sharing Previews (WhatsApp, LinkedIn, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://masterneevtabla.live/">
+    <meta property="og:title" content="Master Neev Tabla | Official Showcase">
+    <meta property="og:description"
+        content="Explore the intricate world of Tabla through curated video lessons and performances. Join our community of rhythm enthusiasts.">
+    <meta property="og:image"
+        content="https://yt3.googleusercontent.com/U9Wf2XmobgeVq06B8cUMparxE7P3XGxOThtiEqqGvww-UvTqmU4-H2NQPkxJ7zHYYwUgGgLA=s800-c-k-c0x00ffffff-no-rj">
+
     <title>Master Neev Tabla | Official Showcase</title>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Master Neev",
+      "url": "http://masterneevtabla.live/",
+      "sameAs": [
+        "https://www.youtube.com/channel/UCnfSjNZZwVl4gs_ZVn9i1ug"
+      ],
+      "jobTitle": "Tabla Artist",
+      "image": "https://yt3.googleusercontent.com/U9Wf2XmobgeVq06B8cUMparxE7P3XGxOThtiEqqGvww-UvTqmU4-H2NQPkxJ7zHYYwUgGgLA=s800-c-k-c0x00ffffff-no-rj",
+      "description": "Master Neev is a Tabla artist sharing lessons and performances in Indian Classical Music."
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=2">
+    <script src="config.js" defer></script>
     <script src="script.js?v=2" defer></script>
 </head>
 
@@ -40,17 +71,17 @@
 
                     <div class="channel-stats-row">
                         <div class="stat-item">
-                            <span class="stat-number">68</span>
+                            <span class="stat-number" id="stat-subscribers">68</span>
                             <span class="stat-label">Subscribers</span>
                         </div>
                         <div class="stat-divider"></div>
                         <div class="stat-item">
-                            <span class="stat-number">15+</span>
+                            <span class="stat-number" id="stat-videos">15+</span>
                             <span class="stat-label">Videos</span>
                         </div>
                         <div class="stat-divider"></div>
                         <div class="stat-item">
-                            <span class="stat-number">2.5K+</span>
+                            <span class="stat-number" id="stat-views">2.5K+</span>
                             <span class="stat-label">Total Views</span>
                         </div>
                     </div>
@@ -70,16 +101,134 @@
             </div>
         </section>
 
+        <section id="about" class="about-section">
+            <div class="container about-content">
+                <div class="about-visual">
+                    <!-- Using same image for now or a placeholder for 'Action Shot' -->
+                    <img src="https://img.youtube.com/vi/YgO2LwVsn60/maxresdefault.jpg" alt="Tabla Performance">
+                </div>
+                <div class="about-text">
+                    <span class="eyebrow">About the Artist</span>
+                    <h3>Preserving the Legacy of Indian Rhythm</h3>
+                    <p>Master Neev is dedicated to the ancient art of Tabla. With a passion for both traditional
+                        compositions and modern fusion, the channel serves as a bridge for students and listeners alike.
+                    </p>
+                    <p>Whether you are a beginner looking to understand the basic 'Taals' or an enthusiast enjoying
+                        complex improvisations, this is your home for rhythm.</p>
+                    <a href="#subscribe" class="btn-secondary">Join the Journey</a>
+                </div>
+            </div>
+        </section>
+
         <section id="videos" class="videos-section">
             <div class="container">
                 <div class="section-header">
                     <h3>Latest Performances</h3>
                     <p>Dive into the latest uploads from the channel.</p>
                 </div>
-                <!-- Video Grid will be populated by JS -->
-                <div class="video-grid" id="video-grid">
-                    <!-- Loading state or fallback -->
-                    <div class="loading-spinner"></div>
+                <div class="video-category">
+                    <h4 class="category-title">Latest Videos</h4>
+                    <div class="video-grid" id="video-grid">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+
+                <div class="video-category" style="margin-top: 4rem;">
+                    <h4 class="category-title">Shorts</h4>
+                    <div class="video-grid" id="shorts-grid">
+                        <!-- Shorts will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </section>
+
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Explore the Tabla</h3>
+                    <p>Designed for students, enthusiasts, and music lovers.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" />
+                            </svg>
+                        </div>
+                        <h4>Fundamental Techniques</h4>
+                        <p>Master the basic syllables (Bols) and hand positions crucial for a strong foundation in
+                            Indian Classical Music.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                <path
+                                    d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2zm0-2V5H5v14h4zm10 0h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2zm0-2V5h-4v14h4z" />
+                            </svg>
+                        </div>
+                        <h4>Rhythmic Cycles (Taals)</h4>
+                        <p>Deep dive into Teentaal, Dadra, Keherwa, and more. Understand the mathematics of rhythm.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                        <h4>Live Performances</h4>
+                        <p>Experience the energy of live Tabla solos and accompaniment. Pure improvisation and
+                            creativity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="section-header" style="padding: 50px 0;">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Community Love</h3>
+                    <p>What viewers are saying about the channel.</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="quote-icon">"</div>
+                        <p class="testimonial-text">"The explanation of Keherwa Taal is the best I have seen on YouTube.
+                            Very clear and precise!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">R</div>
+                            <div class="author-info">
+                                <h5>Rahul Sharma</h5>
+                                <span>Tabla Student</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="quote-icon">"</div>
+                        <p class="testimonial-text">"Love the shorts! They are quick, informative, and help me practice
+                            daily."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">A</div>
+                            <div class="author-info">
+                                <h5>Amit Patel</h5>
+                                <span>Subscriber</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="quote-icon">"</div>
+                        <p class="testimonial-text">"Master Neev's playing style is so crisp. A true inspiration for
+                            young talents."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">S</div>
+                            <div class="author-info">
+                                <h5>Sarah Jenkins</h5>
+                                <span>Music Lover</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
