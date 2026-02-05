@@ -1,0 +1,359 @@
+/* Quiz Page Specific Styles */
+
+/* Quiz Hero Section */
+.quiz-hero {
+    padding-top: 150px;
+    padding-bottom: 80px;
+    text-align: center;
+}
+
+.quiz-hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quiz-hero h2 {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.quiz-hero p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.quiz-stats {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.quiz-stats .stat-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid var(--card-border);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+}
+
+/* Quiz Main Section */
+.quiz-main-section {
+    padding: 50px 0 100px;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 100px 0;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.cta-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    padding: 4rem;
+    border-radius: 30px;
+    border: 1px solid var(--card-border);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
+    animation: rotate 20s linear infinite;
+    z-index: 0;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 1;
+}
+
+.cta-emoji {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 2s ease infinite;
+}
+
+.cta-card h3 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+.cta-card p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    font-family: var(--font-body);
+}
+
+.subscribe-btn {
+    background: #ff0000;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+}
+
+.subscribe-btn:hover {
+    background: #cc0000;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+}
+
+.like-btn {
+    background: var(--accent-color);
+    color: #000;
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.like-btn:hover {
+    background: #e6c200;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px var(--accent-glow);
+}
+
+/* Social Proof */
+.social-proof {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    border: 1px solid var(--card-border);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.social-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.social-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+
+.social-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Share Quiz */
+.share-quiz {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.share-label {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.share-buttons-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.share-buttons-row .share-btn {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.share-buttons-row .share-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    border-color: transparent;
+}
+
+.share-buttons-row .share-btn.whatsapp:hover {
+    background: #25D366;
+    color: #fff;
+    box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+}
+
+.share-buttons-row .share-btn.facebook:hover {
+    background: #1877F2;
+    color: #fff;
+    box-shadow: 0 5px 20px rgba(24, 119, 242, 0.4);
+}
+
+.share-buttons-row .share-btn.twitter:hover {
+    background: #1DA1F2;
+    color: #fff;
+    box-shadow: 0 5px 20px rgba(29, 161, 242, 0.4);
+}
+
+.share-buttons-row .share-btn.copy-link:hover {
+    background: var(--accent-color);
+    color: #000;
+    box-shadow: 0 5px 20px var(--accent-glow);
+}
+
+/* Back to Home Section */
+.back-home-section {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.back-home-section .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Result Actions */
+.result-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quiz-hero {
+        padding-top: 120px;
+        padding-bottom: 50px;
+    }
+
+    .quiz-hero h2 {
+        font-size: 2.5rem;
+    }
+
+    .quiz-hero p {
+        font-size: 1rem;
+    }
+
+    .quiz-stats {
+        gap: 0.8rem;
+    }
+
+    .quiz-stats .stat-badge {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .stat-icon {
+        font-size: 1.2rem;
+    }
+
+    .cta-card {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .cta-emoji {
+        font-size: 3rem;
+    }
+
+    .cta-card h3 {
+        font-size: 2rem;
+    }
+
+    .cta-card p {
+        font-size: 1rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .btn-cta {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .social-proof {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem 1rem;
+    }
+
+    .social-stat {
+        width: 100%;
+    }
+
+    .stat-divider {
+        display: none;
+    }
+
+    .share-buttons-row .share-btn {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+/* Hidden class */
+.hidden {
+    display: none !important;
+}
