@@ -658,11 +658,20 @@ nav a:hover {
     padding: 2rem;
     text-align: center;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; Removed to allow ad expansion */
     min-height: 280px;
     /* Approximate height for a responsive ad */
     display: block;
-    /* Removed flex */
+    /* Ensure block formatting context */
+    width: 100%;
+    /* Explicit width is crucial */
+}
+
+/* Ensure AdSense placeholder has size if initially empty */
+.ad-wrapper ins {
+    display: inline-block;
+    width: 100%;
+    min-width: 300px;
 }
 
 .ad-label {
