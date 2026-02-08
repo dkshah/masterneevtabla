@@ -645,6 +645,38 @@ nav a:hover {
 }
 
 
+/* Advertisement Section */
+.ad-section {
+    padding: 3rem 0;
+    width: 100%;
+}
+
+.ad-wrapper {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    /* Approximate height for a responsive ad */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ad-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
 /* About Section */
 .about-section {
     padding: 100px 0;
