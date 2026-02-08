@@ -1,238 +1,429 @@
-/* Game Page Specific Styles */
+/* Tabla Echo - Kids Game CSS */
+:root {
+    --pad-red: #ff4757;
+    --pad-blue: #2ed573;
+    --pad-green: #1e90ff;
+    --pad-yellow: #ffa502;
+    --pad-bg: #2f3542;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --font-heading: 'Fredoka', cursive;
+    /* More playful font */
+    --accent-glow: rgba(255, 215, 0, 0.3);
+}
+
 body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Fredoka', sans-serif;
+    color: #fff;
+    background: radial-gradient(circle at 50% 50%, #2f3640, #1e272e);
+    min-height: 100vh;
     overflow: hidden;
-    /* Prevent scrolling during game */
-    height: 100vh;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
 }
 
-.game-main {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: radial-gradient(circle at 50% 50%, #1a1a1a, #000);
-    padding-top: 80px;
-    /* Offset for header */
-}
-
-.game-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    height: 80vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#game-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    border: 2px solid var(--accent-color);
-    border-radius: 12px;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
-    overflow: hidden;
-    background: #050505;
-}
-
-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-/* HUD */
-.game-hud {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 20px;
-    display: flex;
-    justify-content: space-between;
-    font-family: 'Orbitron', monospace;
-    /* Use monospaced font if available */
-    color: var(--accent-color);
-    font-size: 1.5rem;
-    pointer-events: none;
-    text-shadow: 0 0 10px var(--accent-glow);
-}
-
-/* Overlay & Modals */
-#game-overlay {
-    position: absolute;
+/* Background */
+.background-glow {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+    opacity: 0.5;
+    z-index: -1;
+}
+
+/* Header */
+.glass-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1rem 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.header-content {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    padding: 0 1rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.logo span {
+    color: gold;
+}
+
+/* Main Container */
+.game-main {
+    display: flex;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
-    z-index: 10;
-    transition: opacity 0.5s ease;
+    align-items: center;
+    height: 100vh;
+    padding-top: 60px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    position: relative;
+}
+
+/* Status / Score */
+.game-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.score-pill {
+    background: #57606f;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+#status-text {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+    min-height: 2.5rem;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.status-highlight {
+    color: gold;
+    transform: scale(1.1);
+}
+
+/* The Pads (Simon Says Board) */
+.pads-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    width: 90vw;
+    height: 90vw;
+    max-width: 400px;
+    max-height: 400px;
+    margin: 0 auto;
+    background: #2f3542;
+    padding: 20px;
+    border-radius: 50%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 8px solid #57606f;
+}
+
+.game-pad {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    /* Squircle */
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.1s;
+    outline: none;
+    box-shadow: inset 0 -8px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.3);
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-pad:active {
+    transform: scale(0.95);
+    box-shadow: inset 0 0px rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.pad-red {
+    background: var(--pad-red);
+    border-top-left-radius: 100%;
+}
+
+.pad-blue {
+    background: var(--pad-blue);
+    border-top-right-radius: 100%;
+}
+
+.pad-green {
+    background: var(--pad-green);
+    border-bottom-left-radius: 100%;
+}
+
+.pad-yellow {
+    background: var(--pad-yellow);
+    border-bottom-right-radius: 100%;
+}
+
+.pad-label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+/* Active Pad Glow */
+.game-pad.active {
+    filter: brightness(1.6) saturate(1.2);
+    box-shadow: 0 0 30px var(--accent-glow), inset 0 0 20px rgba(255, 255, 255, 0.5);
+    transform: scale(0.98);
+}
+
+/* Controls */
+.controls-area {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.btn-primary-large {
+    background: linear-gradient(135deg, #ffa502, #ff7f50);
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    /* Hidden until game over */
+    box-shadow: 0 10px 30px rgba(255, 127, 80, 0.4);
+    transition: transform 0.2s;
+    display: none;
+    /* Hidden by default */
+}
+
+.btn-primary-large:active {
+    transform: scale(0.95);
+}
+
+/* Overlay */
+#game-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s;
+}
+
+#game-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 .overlay-content {
+    background: #fff;
+    color: #333;
+    padding: 3rem;
+    border-radius: 30px;
     text-align: center;
-    padding: 2rem;
-    max-width: 80%;
+    max-width: 90%;
+    width: 400px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
-.overlay-content h2 {
-    font-family: var(--font-heading);
+.overlay-content h1 {
+    font-family: 'Fredoka', cursive;
+    color: var(--pad-red);
     font-size: 3rem;
-    color: var(--accent-color);
     margin-bottom: 1rem;
-    text-shadow: 0 0 20px var(--accent-glow);
 }
 
 .overlay-content p {
-    color: var(--text-secondary);
     font-size: 1.2rem;
+    color: #666;
     margin-bottom: 2rem;
-}
-
-.instructions {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.key-hint {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.5rem;
-    border-radius: 8px;
-    color: #fff;
-    font-weight: bold;
-}
-
-.key-hint span {
-    display: inline-block;
-    background: var(--accent-color);
-    color: #000;
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-    margin-right: 8px;
-    line-height: 24px;
 }
 
 .sub-note {
     font-size: 0.9rem;
-    color: #ffd700;
-    margin-bottom: 1.5rem;
+    color: #888;
+    margin-bottom: 1rem;
 }
 
-#btn-subscribe-play {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0 auto;
-    font-size: 1.2rem;
-    padding: 1rem 2rem;
+.btn-cta {
     background: #ff0000;
     color: #fff;
     border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
     border-radius: 50px;
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-    transition: transform 0.2s, background 0.2s;
-}
-
-#btn-subscribe-play:hover {
-    transform: scale(1.05);
-    background: #cc0000;
-}
-
-#btn-start-game {
-    display: inline-block;
-    padding: 1rem 3rem;
-    font-size: 1.5rem;
-    background: var(--accent-color);
-    color: #000;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 0 20px var(--accent-glow);
-    cursor: pointer;
-    font-weight: bold;
-    animation: pulsate 2s infinite;
-}
-
-@keyframes pulsate {
-    0% {
-        box-shadow: 0 0 10px var(--accent-glow);
-        transform: scale(1);
-    }
-
-    50% {
-        box-shadow: 0 0 30px var(--accent-glow);
-        transform: scale(1.05);
-    }
-
-    100% {
-        box-shadow: 0 0 10px var(--accent-glow);
-        transform: scale(1);
-    }
-}
-
-.final-score {
-    font-size: 4rem;
-    font-weight: bold;
-    color: #fff;
-    margin: 1rem 0;
-}
-
-/* Mobile Controls */
-.game-controls-mobile {
-    display: none;
-    /* Hidden by default on desktop */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     width: 100%;
-    margin-top: 1rem;
-    justify-content: space-around;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3);
 }
 
-.mobile-pad {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid var(--accent-color);
-    background: rgba(255, 215, 0, 0.1);
+.btn-play-huge {
+    background: #2ed573;
     color: #fff;
+    border: none;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    font-size: 1.5rem;
     font-weight: bold;
-    touch-action: manipulation;
-    /* Crucial for fast taps */
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(46, 213, 115, 0.4);
+    animation: bounce 2s infinite;
 }
 
-.mobile-pad:active {
-    background: var(--accent-color);
-    color: #000;
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-20px);
+    }
+
+    60% {
+        transform: translateY(-10px);
+    }
 }
 
-/* Mobile Responsive */
+.hidden {
+    display: none !important;
+}
+
+/* Footer Fix */
+footer {
+    display: none;
+    /* Hide footer on game page for cleanliness */
+}
+
+/* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
-    .container {
-        padding: 0 1rem;
+    .game-main {
+        padding-top: 50px;
+        /* Reduced further */
+        padding-bottom: 10px;
     }
 
-    .game-wrapper {
-        height: 60vh;
-        max-width: 95%;
+    .game-container {
+        justify-content: center;
+        /* Center content vertically */
+        gap: 15px;
+        /* Add explicit gap */
     }
 
-    .game-controls-mobile {
-        display: flex;
+    .pads-grid {
+        width: 85vw;
+        height: 85vw;
+        max-width: 320px;
+        /* Limit max size on mobile */
+        max-height: 320px;
+        gap: 15px;
+        padding: 15px;
+        border-width: 6px;
     }
 
-    .instructions {
-        display: none;
-        /* Hide keyboard instructions on mobile */
+    .game-header {
+        margin-bottom: 10px;
     }
 
-    .overlay-content h2 {
+    #status-text {
+        font-size: 1.5rem;
+        /* Smaller text */
+        min-height: 2rem;
+    }
+
+    .score-pill {
+        padding: 0.3rem 1rem;
+        font-size: 1rem;
+    }
+
+    .controls-area {
+        margin-top: 1rem;
+    }
+
+    .btn-primary-large {
+        padding: 0.8rem 2rem;
+        font-size: 1.2rem;
+    }
+
+    /* Adjust overlay for small screens */
+    .overlay-content {
+        padding: 1.5rem;
+    }
+
+    .overlay-content h1 {
         font-size: 2rem;
+    }
+
+    .btn-play-huge {
+        width: 80px;
+        height: 80px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Very Small Height Screens (Landscape Mobile) */
+@media (max-height: 500px) {
+    .game-main {
+        padding-top: 10px;
+        /* Minimal padding */
+        flex-direction: row;
+        /* Side-by-side layout? */
+        align-items: center;
+    }
+
+    .game-container {
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+        max-width: 100%;
+    }
+
+    .pads-grid {
+        width: 70vh;
+        height: 70vh;
+        max-width: none;
+        max-height: none;
+        margin: 0;
+    }
+
+    .game-header {
+        position: absolute;
+        /* Float header */
+        top: 10px;
+        left: 20px;
+        text-align: left;
     }
 }

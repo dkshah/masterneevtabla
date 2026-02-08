@@ -1,325 +1,206 @@
 /**
- * tabla-game.js
- * A simple rhythm game for Master Neev Tabla
+ * tabla-echo-game.js
+ * A simple "Simon Says" style memory game for kids.
  */
 
 // Configuration
 const CONFIG = {
-    LANE_COUNT: 4,
-    NOTE_SPEED: 4, // Pixels per frame
-    HIT_ZONE_Y: 0.85, // Percentage of height
-    HIT_WINDOW: 50, // Pixels tolerance
-    SPAWN_Rate: 60, // Frames between spawns (approx 1 sec at 60fps)
-    KEYS: ['d', 'f', 'j', 'k'],
-    LABELS: ['Ge', 'Te', 'Te', 'Ka'],
-    COLORS: ['#FF5733', '#33FF57', '#3357FF', '#FF33A8']
+    KEYS: [0, 1, 2, 3], // Red, Blue, Green, Yellow
+    SOUNDS: [261.63, 329.63, 392.00, 523.25], // C4, E4, G4, C5 (Pentatonic feel)
+    LABELS: ['Dha', 'Na', 'Ge', 'Tin'],
+    PAD_DELAY: 400, // Ms to light up
+    GAP_DELAY: 250, // Ms between notes
+    START_DELAY: 1000
 };
 
 // Game State
 let state = {
+    sequence: [],
+    playerInput: [],
+    level: 1,
     isPlaying: false,
-    isSubscribed: false, // In a real app, check via API or LocalStorage
-    score: 0,
-    combo: 0,
-    notes: [], // Array of active notes
-    particles: [], // Array of hit effects
-    frameCount: 0,
-    animationId: null,
-    audioContext: null
+    isInputBlocked: true,
+    isSubscribed: false, // In a real app, verify this via API
 };
 
-// DOM Elements
-const canvas = document.getElementById('game-canvas');
-const ctx = canvas.getContext('2d');
-const scoreEl = document.getElementById('score');
-const comboEl = document.getElementById('combo');
-const overlay = document.getElementById('game-overlay');
-const startScreen = document.getElementById('start-screen');
-const gameOverScreen = document.getElementById('game-over-screen');
-const finalScoreEl = document.getElementById('final-score');
-const btnSubscribe = document.getElementById('btn-subscribe-play');
-const btnStart = document.getElementById('btn-start-game');
-const btnRestart = document.getElementById('btn-restart');
+// Audio Engine (Simple Synth)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// --- Audio System (Web Audio API) ---
-class AudioEngine {
-    constructor() {
-        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-    }
+function playTone(index) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
 
-    playTone(type) {
-        if (this.ctx.state === 'suspended') this.ctx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
 
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
+    osc.type = 'sine'; // Soft, bell-like tone
+    osc.frequency.setValueAtTime(CONFIG.SOUNDS[index], audioCtx.currentTime);
 
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
+    // Envelope
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
 
-        const now = this.ctx.currentTime;
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
 
-        if (type === 0) { // Ge (Bass)
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.exponentialRampToValueAtTime(0.01, now + 0.5);
-            gain.gain.setValueAtTime(1, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-        } else if (type === 1 || type === 2) { // Te (Snare-ish)
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(400, now);
-            gain.gain.setValueAtTime(0.5, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-        } else { // Ka (Flat)
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(200, now);
-            gain.gain.setValueAtTime(0.3, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-        }
-
-        osc.start(now);
-        osc.stop(now + 0.5);
-    }
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
 }
 
-const audio = new AudioEngine();
+// DOM Elements
+const pads = document.querySelectorAll('.game-pad');
+const statusText = document.getElementById('status-text');
+const levelText = document.getElementById('level');
+const overlay = document.getElementById('game-overlay');
+const btnSubscribe = document.getElementById('btn-subscribe-play');
+const btnPlayNow = document.getElementById('btn-play-now');
+const btnStart = document.getElementById('btn-start'); // The one in control area (optional)
 
 // --- Game Logic ---
 
-function resizeCanvas() {
-    canvas.width = canvas.parentElement.clientWidth;
-    canvas.height = canvas.parentElement.clientHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+function startGame() {
+    state.sequence = [];
+    state.playerInput = [];
+    state.level = 1;
+    state.isPlaying = true;
+    state.isInputBlocked = true;
 
-function spawnNote() {
-    // Random lane
-    const lane = Math.floor(Math.random() * CONFIG.LANE_COUNT);
-    state.notes.push({
-        lane: lane,
-        y: -50, // Start above screen
-        active: true,
-        color: CONFIG.COLORS[lane]
-    });
+    updateLevel();
+    statusText.innerText = "Watch closely!";
+    overlay.classList.remove('active'); // Hide overlay
+
+    setTimeout(nextRound, CONFIG.START_DELAY);
 }
 
-function update() {
-    if (!state.isPlaying) return;
+function nextRound() {
+    state.playerInput = [];
+    state.isInputBlocked = true;
 
-    // clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Add new step
+    const randomPad = Math.floor(Math.random() * 4);
+    state.sequence.push(randomPad);
 
-    // Draw Lanes
-    const laneWidth = canvas.width / CONFIG.LANE_COUNT;
-    const hitY = canvas.height * CONFIG.HIT_ZONE_Y;
+    updateLevel();
+    statusText.innerText = "Listen...";
 
-    // Draw Hit Zone Line
-    ctx.beginPath();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.lineWidth = 2;
-    ctx.moveTo(0, hitY);
-    ctx.lineTo(canvas.width, hitY);
-    ctx.stroke();
+    playSequence();
+}
 
-    // Draw Lane Dividers & Keys
-    for (let i = 0; i < CONFIG.LANE_COUNT; i++) {
-        const x = i * laneWidth;
+function playSequence() {
+    let i = 0;
+    const interval = setInterval(() => {
+        const padIndex = state.sequence[i];
+        activatePad(padIndex);
+        i++;
 
-        // Key Indicator at bottom
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.fillRect(x + 10, hitY, laneWidth - 20, canvas.height - hitY - 10);
-
-        ctx.fillStyle = '#fff';
-        ctx.font = '20px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(CONFIG.LABELS[i], x + laneWidth / 2, canvas.height - 20);
-    }
-
-    // Spawn Logic
-    state.frameCount++;
-    if (state.frameCount % CONFIG.SPAWN_Rate === 0) {
-        spawnNote();
-        // Increase difficulty over time
-        if (state.frameCount % 600 === 0 && CONFIG.SPAWN_Rate > 20) {
-            CONFIG.SPAWN_Rate -= 5;
+        if (i >= state.sequence.length) {
+            clearInterval(interval);
+            setTimeout(() => {
+                state.isInputBlocked = false;
+                statusText.innerText = "Your Turn!";
+                statusText.classList.add('status-highlight');
+            }, CONFIG.PAD_DELAY);
         }
-    }
-
-    // Update & Draw Notes
-    state.notes.forEach((note, index) => {
-        if (!note.active) return;
-
-        note.y += CONFIG.NOTE_SPEED;
-
-        // Draw Note
-        const x = note.lane * laneWidth + laneWidth / 2;
-        ctx.beginPath();
-        ctx.arc(x, note.y, 25, 0, Math.PI * 2);
-        ctx.fillStyle = note.color;
-        ctx.fill();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = '#fff';
-        ctx.stroke();
-
-        // Missed Note
-        if (note.y > canvas.height) {
-            note.active = false;
-            resetCombo();
-        }
-    });
-
-    // Remove inactive notes
-    state.notes = state.notes.filter(n => n.active);
-
-    // Update & Draw Particles (Hit Effects)
-    state.particles.forEach((p, i) => {
-        p.life--;
-        p.radius += 2;
-        p.alpha -= 0.05;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 215, 0, ${p.alpha})`; // Gold color
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    });
-    state.particles = state.particles.filter(p => p.life > 0);
-
-    state.animationId = requestAnimationFrame(update);
+    }, CONFIG.PAD_DELAY + CONFIG.GAP_DELAY);
 }
 
-function handleInput(lane) {
-    if (!state.isPlaying) return;
+function activatePad(index) {
+    const pad = pads[index];
+    pad.classList.add('active');
+    playTone(index);
 
-    const hitY = canvas.height * CONFIG.HIT_ZONE_Y;
-    const laneWidth = canvas.width / CONFIG.LANE_COUNT;
+    setTimeout(() => {
+        pad.classList.remove('active');
+    }, CONFIG.PAD_DELAY);
+}
 
-    // Check for matching note in hit window
-    const hitNoteIndex = state.notes.findIndex(note =>
-        note.active &&
-        note.lane === lane &&
-        Math.abs(note.y - hitY) < CONFIG.HIT_WINDOW
-    );
+function handleInput(index) {
+    if (state.isInputBlocked || !state.isPlaying) return;
 
-    if (hitNoteIndex !== -1) {
-        // HIT!
-        const note = state.notes[hitNoteIndex];
-        note.active = false; // Remove note
+    activatePad(index); // Visual/Audio feedback immediately
 
-        // Update Score
-        state.score += 100 + (state.combo * 10);
-        state.combo++;
-        scoreEl.innerText = state.score;
-        comboEl.innerText = state.combo;
+    // Check correctness
+    const currentStep = state.playerInput.length;
 
-        // Visual Effect
-        createExplosion(note.lane * laneWidth + laneWidth / 2, hitY);
+    if (index === state.sequence[currentStep]) {
+        // Correct
+        state.playerInput.push(index);
 
-        // Sound
-        audio.playTone(lane);
+        // Detailed feedback (optional)
+        statusText.classList.remove('status-highlight');
 
+        // Sequence Complete?
+        if (state.playerInput.length === state.sequence.length) {
+            state.isInputBlocked = true;
+            state.level++;
+            statusText.innerText = "Good Job! 🎉";
+            setTimeout(nextRound, 1000);
+        }
     } else {
-        // Miss (clicked empty lane)
-        // Optional: Could penalize score
+        // Wrong
+        gameOver();
     }
-}
-
-function createExplosion(x, y) {
-    state.particles.push({
-        x: x,
-        y: y,
-        radius: 10,
-        alpha: 1,
-        life: 20
-    });
-}
-
-function resetCombo() {
-    state.combo = 0;
-    comboEl.innerText = 0;
-    // Shake screen or flash red?
-    canvas.style.transform = 'translate(5px, 0)';
-    setTimeout(() => canvas.style.transform = 'none', 50);
 }
 
 function gameOver() {
     state.isPlaying = false;
-    cancelAnimationFrame(state.animationId);
-    overlay.style.display = 'flex';
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-    document.getElementById('start-screen').style.display = 'none';
-    gameOverScreen.style.display = 'block';
-    finalScoreEl.innerText = state.score;
+    state.isInputBlocked = true;
+    statusText.innerText = "Game Over!";
+
+    // Flash red or shake
+    document.body.style.background = '#ff4757';
+    setTimeout(() => {
+        document.body.style.background = ''; // Reset
+        // Show overlay with "Try Again"
+        overlay.classList.add('active');
+        document.querySelector('.overlay-content h1').innerText = "Try Again!";
+        document.querySelector('.overlay-content p').innerText = `You reached Level ${state.level}`;
+        document.getElementById('sub-gate').style.display = 'none'; // Ensure sub gate is gone
+        btnPlayNow.classList.remove('hidden');
+        btnPlayNow.innerText = "RETRY ⟳";
+    }, 500);
 }
 
-function startGame() {
-    // Reset State
-    state.score = 0;
-    state.combo = 0;
-    state.notes = [];
-    state.particles = [];
-    state.frameCount = 0;
-    CONFIG.SPAWN_Rate = 60; // Reset difficulty
-    scoreEl.innerText = '0';
-    comboEl.innerText = '0';
-
-    state.isPlaying = true;
-    overlay.style.display = 'none';
-
-    // Resume Audio Context if needed
-    if (audio.ctx.state === 'suspended') {
-        audio.ctx.resume();
-    }
-
-    update();
-
-    // Simple game over timer for demo purposes (e.g., 60 seconds song)
-    // Or just let it run forever until missed too many?
-    // For now, infinite loop until user quits or we add lives.
+function updateLevel() {
+    levelText.innerText = state.level;
 }
 
 // --- Event Listeners ---
 
-// Keyboard
-window.addEventListener('keydown', (e) => {
-    const keyIndex = CONFIG.KEYS.indexOf(e.key.toLowerCase());
-    if (keyIndex !== -1) {
-        handleInput(keyIndex);
-        // Add visual feedback to lane
-    }
-});
-
-// Touch / Mobile Controls
-document.querySelectorAll('.mobile-pad').forEach((btn, index) => {
-    btn.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Prevent zoom/scroll
+// Pads (Touch & Click)
+pads.forEach((pad, index) => {
+    // We rely on 'click' for simplicity as most devices handle it well enough for this game speed
+    // But let's add touchstart for responsiveness
+    pad.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent double-fire
         handleInput(index);
     });
-    // For desktop testing with mouse
-    btn.addEventListener('mousedown', (e) => {
+
+    pad.addEventListener('mousedown', (e) => {
         handleInput(index);
     });
 });
 
-// UI Buttons
+// Subscribe Gate
 btnSubscribe.addEventListener('click', () => {
-    // 1. Open YouTube Channel
+    // 1. Open Channel
     window.open(`https://www.youtube.com/channel/${window.CONFIG ? window.CONFIG.CHANNEL_ID : 'UCnfSjNZZwVl4gs_ZVn9i1ug'}?sub_confirmation=1`, '_blank');
 
-    // 2. Unlock Game (Simulate verify)
+    // 2. Unlock
     btnSubscribe.innerText = "Verifying...";
     setTimeout(() => {
         state.isSubscribed = true;
-        btnSubscribe.style.display = 'none';
-        btnStart.style.display = 'inline-block';
-        startScreen.querySelector('.sub-note').innerText = "Thanks for subscribing! You're ready to play.";
-        startScreen.querySelector('.sub-note').style.color = '#4CAF50';
-    }, 2000); // 2 second delay to simulate user action
+        document.getElementById('sub-gate').style.display = 'none';
+        btnPlayNow.classList.remove('hidden');
+    }, 2000);
 });
 
-btnStart.addEventListener('click', startGame);
-
-btnRestart.addEventListener('click', () => {
-    gameOverScreen.style.display = 'none';
+// Play Button (Overlay)
+btnPlayNow.addEventListener('click', () => {
     startGame();
 });
+
+// Start Button (Main UI - fallback)
+if (btnStart) {
+    btnStart.addEventListener('click', startGame);
+}
