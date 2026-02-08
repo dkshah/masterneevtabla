@@ -110,6 +110,81 @@ nav a:hover {
     color: var(--text-primary);
 }
 
+/* Dropdown Menu */
+.nav-item-dropdown {
+    position: relative;
+    display: inline-block;
+    padding: 1rem 0;
+    /* Add padding to bridge gap for hover */
+}
+
+.nav-dropdown-trigger {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-dropdown-trigger::after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 4px solid var(--text-secondary);
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    transition: var(--transition);
+}
+
+.nav-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    min-width: 180px;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+}
+
+.nav-item-dropdown:hover .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.nav-item-dropdown:hover .nav-dropdown-trigger::after {
+    transform: rotate(180deg);
+    border-top-color: var(--accent-color);
+}
+
+.nav-dropdown-menu a {
+    display: block;
+    padding: 0.8rem 1rem;
+    color: var(--text-secondary);
+    text-align: left;
+    border-radius: 8px;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.nav-dropdown-menu a:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--accent-color);
+    padding-left: 1.2rem;
+    /* Slide effect */
+}
+
 .btn-primary-small {
     background: rgba(255, 255, 255, 0.1);
     padding: 0.5rem 1.2rem;

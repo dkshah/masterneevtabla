@@ -178,6 +178,8 @@ const quizResult = document.getElementById('quiz-result');
 const restartBtn = document.getElementById('restart-quiz');
 const changeCategoryBtn = document.getElementById('change-category');
 const ctaSection = document.getElementById('cta-section');
+const quizOverlay = document.getElementById('quiz-overlay');
+const btnSubscribeQuiz = document.getElementById('btn-subscribe-quiz');
 
 // Initialize Quiz
 function initQuiz() {
@@ -400,4 +402,29 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Initialize on page load
-initQuiz();
+// initQuiz(); // Remove direct initialization, wait for subscription
+
+// Subscription Gate Logic
+// Assuming quizOverlay and btnSubscribeQuiz are declared globally or earlier in the script
+// If not, they should be declared here:
+// const quizOverlay = document.getElementById('quiz-overlay');
+// const btnSubscribeQuiz = document.getElementById('btn-subscribe-quiz');
+
+if (btnSubscribeQuiz) {
+    btnSubscribeQuiz.addEventListener('click', () => {
+        // 1. Open YouTube Channel
+        window.open(`https://www.youtube.com/channel/${window.CONFIG ? window.CONFIG.CHANNEL_ID : 'UCnfSjNZZwVl4gs_ZVn9i1ug'}?sub_confirmation=1`, '_blank');
+
+        // 2. Unlock Quiz (Simulate verify)
+        btnSubscribeQuiz.innerText = "Verifying...";
+
+        setTimeout(() => {
+            quizOverlay.classList.remove('active');
+            // Initialize quiz after unlock
+            initQuiz();
+        }, 2000); // 2 second delay to simulate user action
+    });
+} else {
+    // If element not found (e.g., error in HTML), fallback init
+    initQuiz();
+}

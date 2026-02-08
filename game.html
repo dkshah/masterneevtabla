@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Neev Tabla | Rhythm Game</title>
+    <meta name="description" content="Play the Master Neev Tabla Rhythm Game. Test your timing and skills!">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="game.css">
+
+    <!-- Scripts -->
+    <script src="config.js" defer></script>
+    <script src="game.js" defer></script>
+</head>
+
+<body>
+    <div class="background-glow"></div>
+
+    <header class="glass-header">
+        <div class="container header-content">
+            <h1 class="logo">Master Neev <span>Tabla</span></h1>
+            <nav>
+                <a href="index.html#hero">Home</a>
+                <a href="index.html#videos">Videos</a>
+                <div class="nav-item-dropdown">
+                    <span class="nav-dropdown-trigger"
+                        style="font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">Activities</span>
+                    <div class="nav-dropdown-menu">
+                        <a href="quiz.html">Quiz</a>
+                        <a href="game.html">Rhythm Game</a>
+                    </div>
+                </div>
+                <a href="index.html#subscribe" class="btn-primary-small">Subscribe</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="game-main">
+        <div class="game-wrapper">
+            <!-- Game Canvas Container -->
+            <div id="game-container">
+                <canvas id="game-canvas"></canvas>
+
+                <!-- HUD -->
+                <div class="game-hud">
+                    <div class="score-box">Score: <span id="score">0</span></div>
+                    <div class="combo-box">Combo: <span id="combo">0</span></div>
+                </div>
+
+                <!-- Start/Subscribe Overlay -->
+                <div id="game-overlay" class="glass-card">
+                    <div class="overlay-content" id="start-screen">
+                        <h2>Tabla Rhythm Master</h2>
+                        <p>Test your rhythm skills with Master Neev!</p>
+                        <div class="instructions">
+                            <div class="key-hint"><span>D</span> Ge</div>
+                            <div class="key-hint"><span>F</span> Te</div>
+                            <div class="key-hint"><span>J</span> Te</div>
+                            <div class="key-hint"><span>K</span> Ka</div>
+                        </div>
+                        <p class="sub-note">Subscribe to the channel to play for free!</p>
+                        <button id="btn-subscribe-play" class="btn-primary">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                                <path
+                                    d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+                            </svg>
+                            Subscribe & Play
+                        </button>
+                        <button id="btn-start-game" class="btn-accent" style="display: none;">Start Rhythm</button>
+                    </div>
+
+                    <div class="overlay-content" id="game-over-screen" style="display: none;">
+                        <h2>Game Over</h2>
+                        <p>Your Final Score</p>
+                        <div class="final-score" id="final-score">0</div>
+                        <button id="btn-restart" class="btn-primary">Play Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-controls-mobile">
+                <button class="mobile-pad" data-key="d">Ge (D)</button>
+                <button class="mobile-pad" data-key="f">Te (F)</button>
+                <button class="mobile-pad" data-key="j">Te (J)</button>
+                <button class="mobile-pad" data-key="k">Ka (K)</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2026 Master Neev Tabla. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://www.youtube.com/channel/UCnfSjNZZwVl4gs_ZVn9i1ug" target="_blank">YouTube</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
