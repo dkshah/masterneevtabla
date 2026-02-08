@@ -661,10 +661,8 @@ nav a:hover {
     overflow: hidden;
     min-height: 280px;
     /* Approximate height for a responsive ad */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: block;
+    /* Removed flex */
 }
 
 .ad-label {
