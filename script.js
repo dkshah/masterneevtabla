@@ -108,7 +108,7 @@ async function fetchChannelStats() {
         if (data.items && data.items.length > 0) {
             const stats = data.items[0].statistics;
 
-            // Update DOM elements using IDs
+            // Update DOM elements using IDs (Hero/Stats Section)
             const subEl = document.getElementById('stat-subscribers');
             const vidEl = document.getElementById('stat-videos');
             const viewEl = document.getElementById('stat-views');
@@ -116,6 +116,15 @@ async function fetchChannelStats() {
             if (subEl) subEl.innerText = formatNumber(stats.subscriberCount);
             if (vidEl) vidEl.innerText = formatNumber(stats.videoCount);
             if (viewEl) viewEl.innerText = formatNumber(stats.viewCount);
+
+            // Update Ticker Elements (Top Stats Bar)
+            const tickerSubEl = document.getElementById('ticker-subscribers');
+            const tickerVidEl = document.getElementById('ticker-videos');
+            const tickerViewEl = document.getElementById('ticker-views');
+
+            if (tickerSubEl) tickerSubEl.innerText = formatNumber(stats.subscriberCount);
+            if (tickerVidEl) tickerVidEl.innerText = formatNumber(stats.videoCount);
+            if (tickerViewEl) tickerViewEl.innerText = formatNumber(stats.viewCount);
         }
     } catch (error) {
         console.error('Error fetching channel stats:', error);
@@ -170,8 +179,14 @@ async function fetchVideos() {
         renderVideos(shorts, shortsGrid);
 
         // Hide sections if empty
-        if (videos.length === 0) videoGrid.closest('.video-category').style.display = 'none';
-        if (shorts.length === 0) shortsGrid.closest('.video-category').style.display = 'none';
+        if (videoGrid && videos.length === 0) {
+            const videoCategory = videoGrid.closest('.video-category');
+            if (videoCategory) videoCategory.style.display = 'none';
+        }
+        if (shortsGrid && shorts.length === 0) {
+            const shortsCategory = shortsGrid.closest('.video-category');
+            if (shortsCategory) shortsCategory.style.display = 'none';
+        }
 
         fetchChannelStats();
 

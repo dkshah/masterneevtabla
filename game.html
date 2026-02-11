@@ -25,6 +25,7 @@
 
     <!-- Scripts -->
     <script src="config.js?v=1.0" defer></script>
+    <script src="script.js?v=2.0" defer></script>
     <script src="game.js?v=1.0" defer></script>
 </head>
 
@@ -49,6 +50,28 @@
             </nav>
         </div>
     </header>
+
+    <!-- NEW: Top Stats Pill (Unique Display) -->
+    <div class="top-stats-bar">
+        <div class="container">
+            <div class="stats-ticker">
+                <div class="ticker-item">
+                    <span class="ticker-value" id="stat-subscribers">--</span>
+                    <span class="ticker-label">Subscribers</span>
+                </div>
+                <div class="ticker-sep"></div>
+                <div class="ticker-item">
+                    <span class="ticker-value" id="stat-videos">--</span>
+                    <span class="ticker-label">Videos</span>
+                </div>
+                <div class="ticker-sep"></div>
+                <div class="ticker-item">
+                    <span class="ticker-value" id="stat-views">--</span>
+                    <span class="ticker-label">Total Views</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <main class="game-main">
         <div class="game-container">
